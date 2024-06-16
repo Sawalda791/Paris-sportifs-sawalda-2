@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de Statistiques de Matchs en Temps Réel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .match {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .match:last-child {
+            border-bottom: none;
+        }
+        .team {
+            font-weight: bold;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .stat {
+            flex: 1;
+            padding: 10px;
+            margin: 5px;
+            background: #eee;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Statistiques de Matchs Récents en Temps Réel</h1>
+        <h2>Paris sportifs Sawalda</h2>
+    </header>
+    <main id="content">
+        <!-- Les matchs seront insérés ici par JavaScript -->
+    </main>
+    <script>
+        async function fetchMatchData() {
+            try {
+                const response = await fetch('https://api.exemple.com/matches'); // Remplace cette URL par celle de l'API réelle
+                const data = await response.json();
+                displayMatches(data.matches);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données:', error);
+            }
+        }
+
+        function displayMatches(matches) {
+            const content = document.getElementById('content');
+            content.innerHTML = '';
+
+            matches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'match';
+
+                const scoreElement = document.createElement('div');
+                scoreElement.className = 'score';
+                scoreElement.innerHTML = `<span class="team">${match.teamA}</span> ${match.scoreA} - ${match.scoreB} <span class="team">${match.teamB}</span>`;
+                matchElement.appendChild(scoreElement);
+
+                const statsElement = document.createElement('div');
+                statsElement.className = 'stats';
+
+                const possessionElement = document.createElement('div');
+                possessionElement.className = 'stat';
+                possessionElement.innerHTML = `<h3>Possession</h3><p>${match.teamA}: ${match.possessionA}%</p><p>${match.teamB}: ${match.possessionB}%</p>`;
+                statsElement.appendChild(possessionElement);
+
+                const shotsElement = document.createElement('div');
+                shotsElement.className = 'stat';
+                shotsElement.innerHTML = `<h3>Tirs</h3><p>${match.teamA}: ${match.shotsA}</p><p>${match.teamB}: ${match.shotsB}</p>`;
+                statsElement.appendChild(shotsElement);
+
+                const foulsElement = document.createElement('div');
+                foulsElement.className = 'stat';
+                foulsElement.innerHTML = `<h3>Fautes</h3><p>${match.teamA}: ${match.foulsA}</p><p>${match.teamB}: ${match.foulsB}</p>`;
+                statsElement.appendChild(foulsElement);
+
+                matchElement.appendChild(statsElement);
+                content.appendChild(matchElement);
+            });
+        }
+
+        // Appel initial pour récupérer et afficher les données
+        fetchMatchData();
+
+        // Rafraîchissement des données toutes les 60 secondes
+        setInterval(fetchMatchData, 60000);
+    </script>
+</body>
+</html>
